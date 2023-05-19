@@ -27,7 +27,7 @@ void drawMaze(char maze[height][width]) {
                 std::cout << ">";  // вивести гравця
             }
             else if (i == keyY && j == keyX) {
-                std::cout << 'K';  // вивести ключик
+                std::cout << '*';  // вивести ключик
             }
             else {
                 std::cout << maze[i][j];  // вивести стіну або вільне місце
