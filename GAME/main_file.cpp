@@ -24,7 +24,7 @@ void drawMaze(char maze[height][width]) {
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             if (i == playerY && j == playerX) {
-                std::cout << ">;  // вивести гравця
+                std::cout << ">";  // вивести гравця
             }
             else if (i == keyY && j == keyX) {
                 std::cout << 'K';  // вивести ключик
