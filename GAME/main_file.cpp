@@ -5,8 +5,8 @@
 
 #include <iostream>
 #include <conio.h>
-#include <Windows.h>
-#include "Header files/main_head.h"
+#include <windows.h>
+#include "main_head.h"
 const int width = 10;  // ширина лабіринту
 const int height = 10;  // висота лабіринту
 
@@ -19,7 +19,7 @@ int keyY = 8;  // позиція ключика по осі Y
 int exitX = 2;  // позиція виходу по осі X
 int exitY = 8;  // позиція виходу по осі Y
 
-void drawMaze(char maze[height][width]) {
+void print_lab(char maze[height][width]) {
     system("cls");  // очистити екран
 
     for (int i = 0; i < height; i++) {
@@ -60,7 +60,7 @@ int main() {
     };
 
     while (true) {
-        drawMaze(maze);
+        print_lab(maze);
 
         userInput = _getch();  // отримати введений символ без виводу на екран
 
