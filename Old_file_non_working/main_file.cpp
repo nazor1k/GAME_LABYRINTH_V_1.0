@@ -36,7 +36,7 @@ void print_lab(char maze[height][width]) {
         }
         std::cout << std::endl;
 
-        std::cout<<func(5,3);
+//        std::cout<<func(5,3);
     }
 }
 
