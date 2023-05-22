@@ -11,6 +11,7 @@ int playerX = 1;
 int playerY = 1;
 
 bool play_stat = true;
+int radius;
 
 //EXIT AND KEY AND TELEPORT position
 const int exitX = 0;
@@ -133,13 +134,24 @@ void START_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) {
 		drawMaze(us_in, collect, w_h, map);
 
 		us_in = _getch();
+		
+		if (us_in == 8) {
+			selectedOption = count_map;
+			number_map = 0;
+			*collect = false;
+			playerX = 1;
+			playerY = 1;
+			score_player = 0;
+			time_player = 0;
+			return;
+		}
 		movePlayer(us_in, w_h, map);
 		collect_key_or_exit_or_teleport_or_point(collect, w_h, map);
 
 	}
 	int end = clock();
 
-	print_end_stats(start, end);
+	print_end_stats(start, end, count_map);
 	system("pause");
 }
 
@@ -152,12 +164,19 @@ void LEVELS_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) 
 		system("cls");
 
 		// Вивід меню
-		cout << "+======== MENU ========+" << endl << endl;
-		cout << "\t" << ((select_map == 0) ? "\033[7m> " : "  ") << "LEVEL 1" << "\033[0m" << endl;
-		cout << "\t" << ((select_map == 1) ? "\033[7m> " : "  ") << "LEVEL 2" << "\033[0m" << endl;
-		cout << "\t" << ((select_map == 2) ? "\033[7m> " : "  ") << "LEVEL 3" << "\033[0m" << endl;
-		cout << "\n+======================+" << endl << endl;
-		cout << "\nBACKAPACE TO MAIN MENU ..." << endl << endl;
+		cout << "+======== MENU =======+" << endl;
+		cout << "|                     |" << endl;
+		cout << "| " << ((select_map == 0) ? "\033[7m> " : "  ") << "LEVEL 1" << "\033[0m" << "           |" << endl;
+		cout << "| " << ((select_map == 1) ? "\033[7m> " : "  ") << "LEVEL 2" << "\033[0m" << "           |" << endl;
+		cout << "| " << ((select_map == 2) ? "\033[7m> " : "  ") << "LEVEL 3" << "\033[0m" << "           |" << endl;
+		cout << "|                     |" << endl;
+		cout << "+=====================+" << endl;
+		cout << "|                     |" << endl;
+		cout << "| BACKSPACE TO MAIN   |" << endl;
+		cout << "|      MENU ...       |" << endl;
+		cout << "|                     |" << endl;
+		cout << "+=====================+" << endl;
+
 		// Зчитування введеного символу
 		key = _getch();
 		if (key == 8) {
@@ -184,7 +203,16 @@ void LEVELS_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) 
 	while (number_map == select_map) {
 
 		drawMaze(us_in, collect, w_h, map);
-
+		if (us_in == 8) {
+			selectedOption = count_map;
+			number_map = 0;
+			*collect = false;
+			playerX = 1;
+			playerY = 1;
+			score_player = 0;
+			time_player = 0;
+			return;
+		}
 		us_in = _getch();
 		movePlayer(us_in, w_h, map);
 		collect_key_or_exit_or_teleport_or_point(collect, w_h, map);
@@ -192,29 +220,86 @@ void LEVELS_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) 
 	}
 	int end = clock();
 	number_map = 0;
-	print_end_stats(start, end);
+	print_end_stats(start, end,1);
 	system("pause");
 }
 
 void INFO_func() {
 	system("cls");
-	cout << "+======================== INFO ========================+" << endl << endl;
-	cout << "\033[37m " << "\t" << "Greetings, you are in the game Labyrinth" << "\033[0m" << endl;
-	cout << "\033[37m " << "\t" << "  Small hints for passing the maze\n" << "\033[0m" << endl;
-	cout << "\033[37m " << "\t" << "1) '"<<"\033[38;2;255;200;100m"<<"*"<<"\033[0m'-is a key, yellow in color, which is\n\tnecessary to go to the next level\n" << "\033[0m" << endl;
-	cout << "\033[37m " << "\t" << "2) '" << "\033[31;2m" << "X" << "\033[0m' will appear after picking up the key,\n\tand will be red color\n" << "\033[0m" << endl;
-	cout << "\033[37m " << "\t" << "3) '"  << "$"<<"\033[0m' is the coins you can raise for the best\n\tscore,at the end of the game you will see your score\n" << "\033[0m" << endl;
-	cout << "\033[37m " << "\t" << "4) The '\033[37;45m" << "O" << "\033[0m' is a portal that will help\n\tsend you to closed areas of the maze\n" << "\033[0m" << endl;
-	cout << "\033[37m " << "\t" << "Game made by Hus Artem and Korobchyk Nazar" << "\033[0m" << endl;
-	cout << "\033[37m " << "\n\t" << "Git Hub repository:\n\t\033[4;34mhttps://github.com/nazor1k/GAME_LABYRINTH_V_1.0\033[0m"<< endl;
-	cout << "\033[37m " << "\n\t" << "For exit, press any button" << "\033[0m" << endl;
-	cout << "\n+====================================================+" << endl << endl;
+	cout << "+======================== INFO ========================+" << endl;
+	cout << "|                                                      |" << endl;
+	cout << "|         Greetings, you are in the game Labyrinth     |" << endl;
+	cout << "|           Small hints for passing the maze           |" << endl;
+	cout << "|                                                      |" << endl;
+	cout << "|    1) '" << "\033[38;2;255;200;100m" << "*" << "\033[0m'-is a key, yellow in color, which is        |" << endl;
+	cout << "|    necessary to go to the next level                 |" << endl;
+	cout << "|                                                      |" << endl;
+	cout << "|    2) '" << "\033[31;2m" << "X" << "\033[0m' will appear after picking up the key,      |" << endl;
+	cout << "|    and will be red color                             |" << endl;
+	cout << "|                                                      |" << endl;
+	cout << "|    3) '$' is the coins you can raise for the best    |" << endl;
+	cout << "|    score,at the end of the game you will see your    |" << endl;
+	cout << "|    score                                             |" << endl;
+	cout << "|                                                      |" << endl;
+	cout << "|    4) The '"<<"\033[37;45m" << "O" << "\033[0m' is a portal that will help             |" << endl;
+	cout << "|    send you to closed areas of the maze              |" << endl;
+	cout << "|                                                      |" << endl;
+	cout << "|    Game made by Hus Artem and Korobchyk Nazar        |" << endl;
+	cout << "|                                                      |" << endl;
+	cout << "|    Git Hub repository:                               |" << endl;
+	cout << "|    "<<"\033[4;34m"<<"https://github.com/nazor1k/GAME_LABYRINTH_V_1.0"<<"\033[0m" << "   |" << endl;
+	cout << "|                                                      |" << endl;
+	/*cout << "|    For exit, press any button                        |" << endl;*/
+	cout << "|                                                      |" << endl;
+	cout << "+======================================================+\n" << endl;
 	system("pause");
-
 }
 
-void SETTINGS_func() {
+void SETTINGS_func()
+{
+	int minRadius = 3;
+	int maxRadius = 20;
+	radius = minRadius;  // Початкове значення радіусу
 
+	while (true)
+	{
+		system("cls");  // Очищення екрану
+
+		// Вивід меню
+		cout << "+=======================+" <<endl;
+		cout << "|     SETTINGS MENU     |" << endl;
+		cout << "+=======================+" << endl;
+		cout << "| Radius: " << ((radius > 9) ? "" : "0") << radius << "            |" << endl;
+		cout << "|                       |" << endl;
+		cout << "| [A] Decrease radius   |" << endl;
+		cout << "| [D] Increase radius   |" << endl;
+		cout << "|                       |" << endl;
+		cout << "| [ENTER] Save and exit |" << endl;
+		cout << "+=======================+" << endl;
+
+		char key = _getch();  // Зчитування введеного символу
+
+		if (key == 'a')
+		{
+			// Зменшення радіусу
+			if (radius > minRadius)
+				radius--;
+		}
+		else if (key == 'd')
+		{
+			// Збільшення радіусу
+			if (radius < maxRadius)
+				radius++;
+		}
+		else if (key == 13)  
+		{
+			// Збереження радіусу і вихід з функції
+			cout << "Radius set to: " << radius <<"!" << endl;
+			Sleep(500);
+			break;
+		}
+		
+	}
 }
 
 
@@ -228,13 +313,19 @@ void main_menu() {
 		system("cls");
 
 		// Вивід меню
-		cout << "+======== MENU ========+" << endl << endl;
-		cout << "\t" << ((selectedOption == 0) ? "\033[7m> " : "  ") << "START" << "\033[0m" << endl;
-		cout << "\t" <<((selectedOption == 1) ? "\033[7m> " : "  ") << "LEVELS" << "\033[0m" << endl;
-		cout << "\t" <<((selectedOption == 2) ? "\033[7m> " : "  ") << "INFO"<<"\033[0m" << endl;
-		cout << "\t" << ((selectedOption == 3) ? "\033[7m> " : "  ") << "SETINGS" << "\033[0m" << endl;
-		cout << "\t" << ((selectedOption == 4) ? "\033[7m> " : "  ") << "EXIT" << "\033[0m" << endl;
-		cout << "\n+======================+" << endl << endl;
+		cout << "+=======================+" << endl;
+		cout << "|        MENU           |" << endl;
+		cout << "+=======================+" << endl;
+		cout << "|                       |" << endl;
+		cout << "| " << ((selectedOption == 0) ? "\033[7m\t> START   \033[0m" : "\t> START   ") << "      |" << endl;
+		cout << "| " << ((selectedOption == 1) ? "\033[7m\t> LEVELS  \033[0m" : "\t> LEVELS  ") << "      |" << endl;
+		cout << "| " << ((selectedOption == 2) ? "\033[7m\t> INFO    \033[0m" : "\t> INFO    ") << "      |" << endl;
+		cout << "| " << ((selectedOption == 3) ? "\033[7m\t> SETTINGS\033[0m" : "\t> SETTINGS") << "      |" << endl;
+		cout << "| " << ((selectedOption == 4) ? "\033[7m\t> EXIT    \033[0m" : "\t> EXIT    ") << "      |" << endl;
+		cout << "|                       |" << endl;
+		cout << "+=======================+" << endl;
+
+
 		
 		// Зчитування введеного символу
 		key = _getch();
@@ -256,15 +347,20 @@ void main_menu() {
 
 
 
-void print_end_stats(int start,int end) {
-	time_player = ((double(end) - double(start)) / CLOCKS_PER_SEC) - number_map;
-	cout << " +-----------------------+"
-		<< "\n     Congratulations !\n"
-		<< "      You have passed \n"
-		<< "         the game!\n\n"
-		<< "     YOUR SCORE: " << score_player
-		<< "\n     YOUR TIME: " << time_player
-		<< "\n +-----------------------+" << std::endl;
+void print_end_stats(int start,int end,int c_m) {
+	time_player = ((double(end) - double(start)) / CLOCKS_PER_SEC) - c_m;
+	cout << "+-----------------------+" << endl;
+	cout << "|                       |" << endl;
+	cout << "|   Congratulations !   |" << endl;
+	cout << "|    You have passed    |" << endl;
+	cout << "|       the game!       |" << endl;
+	cout << "|                       |" << endl;
+	cout << "|   YOUR SCORE: "  << score_player << " points" << endl;
+	cout << "|   YOUR TIME: "  << time_player << " seconds" << endl;
+	cout << "|                       |" << endl;
+	cout << "+-----------------------+" << endl;
+	score_player = 0;
+	time_player = 0;
 }
 
 
@@ -319,7 +415,20 @@ void drawMaze(char us_in, bool* collect,int w_h[count_map][2] , char* map[]) {
 		}
 		cout << endl;
 	}
+
+	cout << "\n+=====================+" << endl;
+	cout << "|                     |" << endl;
+	cout << "| BACKSPACE TO MAIN   |" << endl;
+	cout << "|      MENU ...       |" << endl;
+	cout << "|                     |" << endl;
+	cout << "+=====================+" << endl;
 }
+
+
+
+
+
+
 
 void movePlayer(char userInput, int w_h[count_map][2], char* map[]) {
 	if (userInput == 'w' && map[number_map][(playerY - 1) * w_h[number_map][0] + (playerX)] != B) {
@@ -423,16 +532,14 @@ void game() {
 			break;
 			
 		case 1:
-			LEVELS_func(userInput, collect, w_h, map);
-			
-			
+			LEVELS_func(userInput, collect, w_h, map);		
 			break;
 		case 2:
 			INFO_func();
-
 			break;
 		case 3:
 			SETTINGS_func();
+			break;
 		case 4:
 			play_stat = false;
 			break;
