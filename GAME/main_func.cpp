@@ -11,7 +11,7 @@ int playerX = 1;
 int playerY = 1;
 
 bool play_stat = true;
-int radius;
+int radius=3;
 
 //EXIT AND KEY AND TELEPORT position
 const int exitX = 0;
@@ -259,7 +259,7 @@ void SETTINGS_func()
 {
 	int minRadius = 3;
 	int maxRadius = 20;
-	radius = minRadius;  // Початкове значення радіусу
+	/*radius = minRadius;*/  // Початкове значення радіусу
 
 	while (true)
 	{
@@ -277,6 +277,9 @@ void SETTINGS_func()
 		cout << "| [ENTER] Save and exit |" << endl;
 		cout << "+=======================+" << endl;
 
+
+
+		
 		char key = _getch();  // Зчитування введеного символу
 
 		if (key == 'a')
@@ -291,11 +294,11 @@ void SETTINGS_func()
 			if (radius < maxRadius)
 				radius++;
 		}
-		else if (key == 13)  
+		else if (key == 13 || key == 8)
 		{
 			// Збереження радіусу і вихід з функції
 			cout << "Radius set to: " << radius <<"!" << endl;
-			Sleep(500);
+			Sleep(1000);
 			break;
 		}
 		
