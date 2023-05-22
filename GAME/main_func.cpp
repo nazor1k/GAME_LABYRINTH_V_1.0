@@ -33,7 +33,7 @@ int select_map = 2;
 int selectedOption = 0;
 int  number_map = 0;
 bool collect_key = false;
-const int count_map = 3;
+//const int count_map = 3;
 
 char maze[10][10] = {
    {B, B, B, B, B, B, B, B, B, B},
