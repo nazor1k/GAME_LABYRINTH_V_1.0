@@ -1,7 +1,6 @@
 #include <iostream>
 #include <conio.h>
 #include <windows.h>
-#include "main_head.h"
 #include<ctime>
 #include<time.h>
 using namespace std;
@@ -22,7 +21,7 @@ const int portals[4] = { 16,2,9,18 };//{ y1,x1,y2,x2}
 
 
 //player_stats
-double time_player=0;
+double time_player = 0;
 int score_player = 0;
 
 //MAPS SYMBOL
@@ -33,6 +32,7 @@ int select_map = 2;
 int selectedOption = 0;
 int  number_map = 0;
 bool collect_key = false;
+
 
 char maze[10][10] = {
    {B, B, B, B, B, B, B, B, B, B},
@@ -185,25 +185,35 @@ void LEVELS_func(char us_in, bool* collect, int w_h[3][2], char* map[]) {
 }
 
 void INFO_func() {
-	//допиши
+	system("cls");
+		cout << "+======================== INFO ========================+" << endl << endl;
+		cout << "\033[37m " << "  " << "Greetings, you are in the game Labyrinth" << "\033[0m" << endl;
+		cout << "\033[37m " << "  " << "Small hints for passing the maze" << "\033[0m" << endl;
+		cout << "\033[37m " << "  " << "1) '*'-is a key, yellow in color, which is\n necessary to go to the next level" << "\033[0m" << endl;
+		cout << "\033[37m " << "  " << "2) 'X' will appear after picking up the key,\n and will be red color" << "\033[0m" << endl;
+		cout << "\033[37m " << "  " << "3) '$' is the coins you can raise for the best\n score,at the end of the game you will see your score" << "\033[0m" << endl;
+		cout << "\033[37m " << "  " << "4) The 'Purple Icon' is a portal that will help\n send you to closed areas of the maze" << "\033[0m" << endl;
+		cout << "\033[37m " << "  " << "Game made by Hus Artem and Korobchyk Nazar" << "\033[0m" << endl;
+		cout << "\033[37m " << "  " << "For exit, press any button" << "\033[0m" << endl;
+		cout << "\n+====================================================+" << endl << endl;
+	
 }
-
 
 
 
 void main_menu() {
 	selectedOption = 0;
-	int key=NULL;
+	int key = NULL;
 
-	while (key!=13) {
+	while (key != 13) {
 		// Очищення екрану
 		system("cls");
 
 		// Вивід меню
 		cout << "+======== MENU ========+" << endl << endl;
 		cout << "\t" << ((selectedOption == 0) ? "\033[30;47m> " : "  ") << "START" << "\033[0m" << endl;
-		cout << "\t" <<((selectedOption == 1) ? "\033[30;47m> " : "  ") << "LEVELS" << "\033[0m" << endl;
-		cout << "\t" <<((selectedOption == 2) ? "\033[30;47m> " : "  ") << "INFO"<<"\033[0m" << endl;
+		cout << "\t" << ((selectedOption == 1) ? "\033[30;47m> " : "  ") << "LEVELS" << "\033[0m" << endl;
+		cout << "\t" << ((selectedOption == 2) ? "\033[30;47m> " : "  ") << "INFO" << "\033[0m" << endl;
 		cout << "\t" << ((selectedOption == 3) ? "\033[30;47m> " : "  ") << "EXIT" << "\033[0m" << endl;
 		cout << "\n+======================+" << endl << endl;
 		// Зчитування введеного символу
@@ -219,14 +229,14 @@ void main_menu() {
 		case 'S':
 			selectedOption = (selectedOption + 1) % 4;  // Перехід до наступного пункту
 			break;
-		
+
 		}
 	}
 }
 
 
 
-void print_end_stats(int start,int end) {
+void print_end_stats(int start, int end) {
 	time_player = ((double(end) - double(start)) / CLOCKS_PER_SEC) - number_map;
 	cout << " +-----------------------+"
 		<< "\n     Congratulations !\n"
@@ -240,7 +250,7 @@ void print_end_stats(int start,int end) {
 
 
 
-void add_score_points(int w_h[3][2], char* map[],int num) {
+void add_score_points(int w_h[3][2], char* map[], int num) {
 	for (size_t i = 0; i < 20; i++)
 	{
 		int point_x = rand() % w_h[num][1];
@@ -252,9 +262,9 @@ void add_score_points(int w_h[3][2], char* map[],int num) {
 }
 
 
-void drawMaze(char us_in, bool* collect,int w_h[3][2] , char* map[]) {
+void drawMaze(char us_in, bool* collect, int w_h[3][2], char* map[]) {
 	system("cls");
-	char player= player_direction(us_in);
+	char player = player_direction(us_in);
 
 	for (int i = 0; i < w_h[number_map][1]; i++) {//     height
 		for (int j = 0; j < w_h[number_map][0]; j++) {//    width
@@ -264,8 +274,8 @@ void drawMaze(char us_in, bool* collect,int w_h[3][2] , char* map[]) {
 			else if (i == exit_and_key[number_map][keyY] && j == exit_and_key[number_map][keyX]) {
 				cout << "\033[38;2;255;200;100m" << '*' << "\033[0m";
 			}
-			else if (number_map==2 && (i == portals[0]&& j == portals[1] || i == portals[2] && j == portals[3])) {
-				cout<<"\033[37;45m" << 'O' << "\033[0m";
+			else if (number_map == 2 && (i == portals[0] && j == portals[1] || i == portals[2] && j == portals[3])) {
+				cout << "\033[37;45m" << 'O' << "\033[0m";
 			}
 			else if ((i == exit_and_key[number_map][exitY] && j == exit_and_key[number_map][exitX]) && collect[0] == true) {
 				cout << "\033[31;2m" << 'X' << "\033[0m";
@@ -285,10 +295,10 @@ void movePlayer(char userInput, int w_h[3][2], char* map[]) {
 	else if (userInput == 's' && map[number_map][(playerY + 1) * w_h[number_map][0] + (playerX)] != B) {
 		playerY++;
 	}
-	else if (userInput == 'a' && map[number_map][(playerY) * w_h[number_map][0] + (playerX-1)] != B) {
+	else if (userInput == 'a' && map[number_map][(playerY)*w_h[number_map][0] + (playerX - 1)] != B) {
 		playerX--;
 	}
-	else if (userInput == 'd' && map[number_map][(playerY) * w_h[number_map][0] + (playerX+1)] != B) {
+	else if (userInput == 'd' && map[number_map][(playerY)*w_h[number_map][0] + (playerX + 1)] != B) {
 		playerX++;
 	}
 }
@@ -296,7 +306,7 @@ void movePlayer(char userInput, int w_h[3][2], char* map[]) {
 
 
 
-void collect_key_or_exit_or_teleport_or_point(bool* c_k,int w_h[3][2], char* map[]) {
+void collect_key_or_exit_or_teleport_or_point(bool* c_k, int w_h[3][2], char* map[]) {
 
 
 	//ПЕРЕВІРКА НА ТЕ ЧИ ВИ НАСТУПИЛИ НА КЛЮЧ
@@ -314,20 +324,20 @@ void collect_key_or_exit_or_teleport_or_point(bool* c_k,int w_h[3][2], char* map
 		system("cls");
 		playerX = 1;
 		playerY = 1;
-		cout << "\033[38;2;0;200;0m" << "\nYou complete LEVEL - "<<number_map+1<<"!\n\n"<< "\033[0m";
+		cout << "\033[38;2;0;200;0m" << "\nYou complete LEVEL - " << number_map + 1 << "!\n\n" << "\033[0m";
 		number_map++;
 		Sleep(1000);
 		system("cls");
 	}
 	//КОЛИ НАСТУПИЛИ НА ПОІНТ
-	if(number_map != 3){
+	if (number_map != 3) {
 		if (map[number_map][(playerY * w_h[number_map][0]) + playerX] == '$') {
 			map[number_map][(playerY * w_h[number_map][0]) + playerX] = ' ';
 			score_player++;
 		}
-	
+
 	}
-	
+
 
 
 	//ТЕЛЕПОРТ
@@ -344,15 +354,15 @@ void collect_key_or_exit_or_teleport_or_point(bool* c_k,int w_h[3][2], char* map
 				playerY = portals[0];
 			}
 		}
-		
-		
-		
+
+
+
 	}
 }
 
 
 
-	
+
 
 
 void game() {
@@ -386,11 +396,11 @@ void game() {
 			play_stat = false;
 			break;
 		}
-		
+
 		system("pause");
-		
+
 	}
-	
+
 
 	delete[] collect;
 }
