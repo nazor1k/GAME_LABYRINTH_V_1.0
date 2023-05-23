@@ -97,6 +97,18 @@ char maze3[20][20] = {
 };
 
 
+bool into_radius(int a, int b) {
+	if (radius == 21) {
+		return true;
+	}
+	int dy = abs(playerY - a);
+	int dx = abs(playerX - b);
+	return dy <= radius / 2 && dx <= radius / 2;
+}
+
+
+
+
 void enter_to_action() {
 	cout << "\033[38;2;0;200;0m" <<
 		"\n--------------------------------"
@@ -150,7 +162,6 @@ void START_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) {
 
 	}
 	int end = clock();
-
 	print_end_stats(start, end, count_map);
 	system("pause");
 }
@@ -258,7 +269,7 @@ void INFO_func() {
 void SETTINGS_func()
 {
 	int minRadius = 3;
-	int maxRadius = 20;
+	int maxRadius = 21;
 	/*radius = minRadius;*/  // Початкове значення радіусу
 
 	while (true)
@@ -266,10 +277,12 @@ void SETTINGS_func()
 		system("cls");  // Очищення екрану
 
 		// Вивід меню
-		cout << "+=======================+" <<endl;
+		cout << "+=======================+" << endl;
 		cout << "|     SETTINGS MENU     |" << endl;
 		cout << "+=======================+" << endl;
-		cout << "| Radius: " << ((radius > 9) ? "" : "0") << radius << "            |" << endl;
+		cout << "| Radius: " << ((radius > 9) ? "" : "0"); 
+		if (radius <= 20) cout<<(radius)<<"     "; else cout << "ALL_MAP";
+		cout<<"       |" << endl;
 		cout << "|                       |" << endl;
 		cout << "| [A] Decrease radius   |" << endl;
 		cout << "| [D] Increase radius   |" << endl;
@@ -364,6 +377,7 @@ void print_end_stats(int start,int end,int c_m) {
 	cout << "+-----------------------+" << endl;
 	score_player = 0;
 	time_player = 0;
+	number_map = 0;
 }
 
 
@@ -400,21 +414,27 @@ void drawMaze(char us_in, bool* collect,int w_h[count_map][2] , char* map[]) {
 
 	for (int i = 0; i < w_h[number_map][1]; i++) {//     height
 		for (int j = 0; j < w_h[number_map][0]; j++) {//    width
-			if (i == playerY && j == playerX) {
-				cout << player;
-			}
-			else if (i == exit_and_key[number_map][keyY] && j == exit_and_key[number_map][keyX] && *collect==false) {
-				cout << "\033[38;2;255;200;100m" << '*' << "\033[0m";
-			}
-			else if (number_map==2 && (i == portals[0]&& j == portals[1] || i == portals[2] && j == portals[3])) {
-				cout<<"\033[37;45m" << 'O' << "\033[0m";
-			}
-			else if ((i == exit_and_key[number_map][exitY] && j == exit_and_key[number_map][exitX]) && collect[0] == true) {
-				cout << "\033[31;2m" << 'X' << "\033[0m";
+			if (into_radius(i,j)) {
+				if (i == playerY && j == playerX) {
+					cout << player;
+				}
+				else if (i == exit_and_key[number_map][keyY] && j == exit_and_key[number_map][keyX] && *collect == false) {
+					cout << "\033[38;2;255;200;100m" << '*' << "\033[0m";
+				}
+				else if (number_map == 2 && (i == portals[0] && j == portals[1] || i == portals[2] && j == portals[3])) {
+					cout << "\033[37;45m" << 'O' << "\033[0m";
+				}
+				else if ((i == exit_and_key[number_map][exitY] && j == exit_and_key[number_map][exitX]) && collect[0] == true) {
+					cout << "\033[31;2m" << 'X' << "\033[0m";
+				}
+				else {
+					cout << (map[number_map][i * w_h[number_map][0] + j]);//map[number_map][i][j]
+				}
 			}
 			else {
-				cout << (map[number_map][i * w_h[number_map][0] + j]);//map[number_map][i][j]
+				cout << " ";
 			}
+			
 		}
 		cout << endl;
 	}
