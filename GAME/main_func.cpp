@@ -18,8 +18,8 @@ const int exitX = 0;
 const int exitY = 1;
 const int keyX = 2;
 const int keyY = 3;
-int exit_and_key[count_map][4] = { {4,3,8,8}, {18,17,1,16}, {18,18,18,7} };//{ {e1,e2,k1,k2}, {e1,e2,k1,k2}, {e1,e2,k1,k2} }
-const int portals[count_map][4] = { {-1,-1,-1,-1},{-1,-1,-1,-1},{16,2,9,18} };//{ y1,x1,y2,x2}
+int exit_and_key[count_map][4] = { {4,3,8,8}, {18,17,1,16}, {18,18,18,7},{4,3,8,8} };//{ {e1,e2,k1,k2}, {e1,e2,k1,k2}, {e1,e2,k1,k2} }
+const int portals[count_map][4] = { {-1,-1,-1,-1},{-1,-1,-1,-1},{16,2,9,18},{-1,-1,-1,-1}, };//{ y1,x1,y2,x2}
 
 
 //player_stats
@@ -96,7 +96,18 @@ char maze3[20][20] = {
 };
 
 
-
+char maze4[10][10] = {
+   {B, B, B, B, B, B, B, B, B, B},
+   {B, E, E, E, E, E, E, E, E, B},
+   {B, E, B, B, B, B, E, B, E, B},
+   {B, E, B, E, E, B, E, E, E, B},
+   {B, E, B, E, B, B, B, B, E, B},
+   {B, E, B, E, E, E, E, B, E, B},
+   {B, E, B, B, B, B, E, B, E, B},
+   {B, E, E, E, E, B, E, E, E, B},
+   {B, B, E, B, E, E, E, B, E, B},
+   {B, B, B, B, B, B, B, B, B, B}
+};
 
 
 
@@ -510,8 +521,8 @@ void collect_key_or_exit_or_teleport_or_point(int w_h[count_map][2], char* map[]
 
 void game() {
 	srand(time(0));
-	int w_h[count_map][2] = { {10,10}, {20,19},{20,20} };
-	char* map[count_map] = { *maze, *maze2,*maze3 };
+	int w_h[count_map][2] = { {10,10}, {20,19},{20,20},{10,10} };
+	char* map[count_map] = { *maze, *maze2,*maze3,*maze4 };
 	char userInput=NULL;
 	while (play_stat == true) {
 		system("cls");
