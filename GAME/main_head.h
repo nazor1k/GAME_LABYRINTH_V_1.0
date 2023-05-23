@@ -5,7 +5,7 @@
 //
 //#endif //GAME_LABYRINTH_V_1_0_MAIN_HEAD_H
 #pragma once
-const int count_map = 3;
+const int count_map = 4;
 
 void enter_to_action();
 char player_direction(char us_in);
