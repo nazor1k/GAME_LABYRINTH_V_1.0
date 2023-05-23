@@ -7,6 +7,7 @@
 #pragma once
 const int count_map = 4;
 
+bool into_radius(int a, int b);
 void enter_to_action();
 char player_direction(char us_in);
 void START_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]);
