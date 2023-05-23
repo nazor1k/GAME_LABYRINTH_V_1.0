@@ -18,8 +18,8 @@ const int exitX = 0;
 const int exitY = 1;
 const int keyX = 2;
 const int keyY = 3;
-int exit_and_key[3][4] = { {4,3,8,8}, {18,17,1,16}, {18,18,18,7} };
-const int portals[4] = { 16,2,9,18 };//{ y1,x1,y2,x2}
+int exit_and_key[count_map][4] = { {4,3,8,8}, {18,17,1,16}, {18,18,18,7} };//{ {e1,e2,k1,k2}, {e1,e2,k1,k2}, {e1,e2,k1,k2} }
+const int portals[count_map][4] = { {-1,-1,-1,-1},{-1,-1,-1,-1},{16,2,9,18} };//{ y1,x1,y2,x2}
 
 
 //player_stats
@@ -34,7 +34,6 @@ int select_map = 2;
 int selectedOption = 0;
 int  number_map = 0;
 bool collect_key = false;
-//const int count_map = 3;
 
 char maze[10][10] = {
    {B, B, B, B, B, B, B, B, B, B},
@@ -97,6 +96,10 @@ char maze3[20][20] = {
 };
 
 
+
+
+
+
 bool into_radius(int a, int b) {
 	if (radius == 21) {
 		return true;
@@ -105,9 +108,6 @@ bool into_radius(int a, int b) {
 	int dx = abs(playerX - b);
 	return dy <= radius / 2 && dx <= radius / 2;
 }
-
-
-
 
 void enter_to_action() {
 	cout << "\033[38;2;0;200;0m" <<
@@ -137,20 +137,19 @@ char player_direction(char us_in) {
 	return player;
 }
 
-
-void START_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) {
+void START_func(char us_in, int w_h[count_map][2], char* map[]) {
 	int start = clock();
 	
 	while (number_map != count_map) {
 
-		drawMaze(us_in, collect, w_h, map);
+		drawMaze(us_in, w_h, map);
 
 		us_in = _getch();
 		
 		if (us_in == 8) {
 			selectedOption = count_map;
 			number_map = 0;
-			*collect = false;
+			collect_key = false;
 			playerX = 1;
 			playerY = 1;
 			score_player = 0;
@@ -158,7 +157,7 @@ void START_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) {
 			return;
 		}
 		movePlayer(us_in, w_h, map);
-		collect_key_or_exit_or_teleport_or_point(collect, w_h, map);
+		collect_key_or_exit_or_teleport_or_point( w_h, map);
 
 	}
 	int end = clock();
@@ -166,7 +165,7 @@ void START_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) {
 	system("pause");
 }
 
-void LEVELS_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) {
+void LEVELS_func(char us_in, int w_h[count_map][2], char* map[]) {
 	int start = clock();
 	int key = NULL;
 
@@ -177,9 +176,10 @@ void LEVELS_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) 
 		// Вивід меню
 		cout << "+======== MENU =======+" << endl;
 		cout << "|                     |" << endl;
-		cout << "| " << ((select_map == 0) ? "\033[7m> " : "  ") << "LEVEL 1" << "\033[0m" << "           |" << endl;
-		cout << "| " << ((select_map == 1) ? "\033[7m> " : "  ") << "LEVEL 2" << "\033[0m" << "           |" << endl;
-		cout << "| " << ((select_map == 2) ? "\033[7m> " : "  ") << "LEVEL 3" << "\033[0m" << "           |" << endl;
+		for (int i = 0; i < count_map; i++)
+		{
+			cout << "| " << ((select_map == i) ? "\033[7m> " : "  ") << "LEVEL "<< i+1 << "\033[0m" << "           |" << endl;
+		}
 		cout << "|                     |" << endl;
 		cout << "+=====================+" << endl;
 		cout << "|                     |" << endl;
@@ -213,11 +213,11 @@ void LEVELS_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) 
 	add_score_points(w_h, map, select_map);
 	while (number_map == select_map) {
 
-		drawMaze(us_in, collect, w_h, map);
+		drawMaze(us_in, w_h, map);
 		if (us_in == 8) {
 			selectedOption = count_map;
 			number_map = 0;
-			*collect = false;
+			collect_key = false;
 			playerX = 1;
 			playerY = 1;
 			score_player = 0;
@@ -226,7 +226,7 @@ void LEVELS_func(char us_in, bool* collect, int w_h[count_map][2], char* map[]) 
 		}
 		us_in = _getch();
 		movePlayer(us_in, w_h, map);
-		collect_key_or_exit_or_teleport_or_point(collect, w_h, map);
+		collect_key_or_exit_or_teleport_or_point( w_h, map);
 
 	}
 	int end = clock();
@@ -288,7 +288,7 @@ void SETTINGS_func()
 		cout << "| [D] Increase radius   |" << endl;
 		cout << "|                       |" << endl;
 		cout << "| [ENTER] Save and exit |" << endl;
-		cout << "+=======================+" << endl;
+		cout << "+=======================+" << endl; 
 
 
 
@@ -309,16 +309,16 @@ void SETTINGS_func()
 		}
 		else if (key == 13 || key == 8)
 		{
-			// Збереження радіусу і вихід з функції
-			cout << "Radius set to: " << radius <<"!" << endl;
+			// Збереження радіусу і вихід з функції 
+			cout << "Radius set to: ";
+			if (radius <= 20) cout << radius; else cout << "ALL_MAP";
+			cout<<"!" << endl;
 			Sleep(1000);
 			break;
 		}
 		
 	}
 }
-
-
 
 void main_menu() {
 	selectedOption = 0;
@@ -361,8 +361,6 @@ void main_menu() {
 	}
 }
 
-
-
 void print_end_stats(int start,int end,int c_m) {
 	time_player = ((double(end) - double(start)) / CLOCKS_PER_SEC) - c_m;
 	cout << "+-----------------------+" << endl;
@@ -379,9 +377,6 @@ void print_end_stats(int start,int end,int c_m) {
 	time_player = 0;
 	number_map = 0;
 }
-
-
-
 
 void add_score_points(int w_h[count_map][2], char* map[],int num) {
 	map[number_map][(exit_and_key[number_map][keyY] * w_h[number_map][0]) + exit_and_key[number_map][keyX]] = '*';
@@ -407,8 +402,7 @@ void add_score_points(int w_h[count_map][2], char* map[],int num) {
 	}
 }
 
-
-void drawMaze(char us_in, bool* collect,int w_h[count_map][2] , char* map[]) {
+void drawMaze(char us_in,int w_h[count_map][2] , char* map[]) {
 	system("cls");
 	char player= player_direction(us_in);
 
@@ -418,17 +412,17 @@ void drawMaze(char us_in, bool* collect,int w_h[count_map][2] , char* map[]) {
 				if (i == playerY && j == playerX) {
 					cout << player;
 				}
-				else if (i == exit_and_key[number_map][keyY] && j == exit_and_key[number_map][keyX] && *collect == false) {
+				else if (i == exit_and_key[number_map][keyY] && j == exit_and_key[number_map][keyX] && collect_key == false) {
 					cout << "\033[38;2;255;200;100m" << '*' << "\033[0m";
 				}
-				else if (number_map == 2 && (i == portals[0] && j == portals[1] || i == portals[2] && j == portals[3])) {
+				else if ( (i == portals[number_map][0] && j == portals[number_map][1] || i == portals[number_map][2] && j == portals[number_map][3])) {
 					cout << "\033[37;45m" << 'O' << "\033[0m";
 				}
-				else if ((i == exit_and_key[number_map][exitY] && j == exit_and_key[number_map][exitX]) && collect[0] == true) {
+				else if ((i == exit_and_key[number_map][exitY] && j == exit_and_key[number_map][exitX]) && collect_key == true) {
 					cout << "\033[31;2m" << 'X' << "\033[0m";
 				}
 				else {
-					cout << (map[number_map][i * w_h[number_map][0] + j]);//map[number_map][i][j]
+					cout << (map[number_map][i * w_h[number_map][0] + j]);//map[number_map][i][j] по факту аналогічне map[number_map][i * w_h[number_map][0] + j] одне одному але перше не робить
 				}
 			}
 			else {
@@ -447,12 +441,6 @@ void drawMaze(char us_in, bool* collect,int w_h[count_map][2] , char* map[]) {
 	cout << "+=====================+" << endl;
 }
 
-
-
-
-
-
-
 void movePlayer(char userInput, int w_h[count_map][2], char* map[]) {
 	if (userInput == 'w' && map[number_map][(playerY - 1) * w_h[number_map][0] + (playerX)] != B) {
 		playerY--;
@@ -468,24 +456,19 @@ void movePlayer(char userInput, int w_h[count_map][2], char* map[]) {
 	}
 }
 
-
-
-
-void collect_key_or_exit_or_teleport_or_point(bool* c_k,int w_h[count_map][2], char* map[]) {
+void collect_key_or_exit_or_teleport_or_point(int w_h[count_map][2], char* map[]) {
 
 
 	//ПЕРЕВІРКА НА ТЕ ЧИ ВИ НАСТУПИЛИ НА КЛЮЧ
 	if (playerX == exit_and_key[number_map][keyX] && playerY == exit_and_key[number_map][keyY]) {
 		map[number_map][(exit_and_key[number_map][keyY] * w_h[number_map][0]) + exit_and_key[number_map][keyX]] = ' ';
-		*c_k = true;
-		/*exit_and_key[number_map][keyX] = -1;
-		exit_and_key[number_map][keyY] = -1;*/
+		collect_key = true;
 	}
 
 	//ПЕРЕВІРКА НА ТЕ ЧИ Є У ВАС КЛЮЧ І НА ТЕ ЧИ ВИ НАСТУПИЛИ НА ВИХІД
-	if (playerX == exit_and_key[number_map][exitX] && playerY == exit_and_key[number_map][exitY] && *c_k == true) {
+	if (playerX == exit_and_key[number_map][exitX] && playerY == exit_and_key[number_map][exitY] && collect_key == true) {
 		map[number_map][(playerY * w_h[number_map][0]) + playerX] = ' ';
-		*c_k = false;
+		collect_key = false;
 		system("cls");
 		playerX = 1;
 		playerY = 1;
@@ -495,7 +478,7 @@ void collect_key_or_exit_or_teleport_or_point(bool* c_k,int w_h[count_map][2], c
 		system("cls");
 	}
 	//КОЛИ НАСТУПИЛИ НА ПОІНТ
-	if(number_map != 3){
+	if(number_map != count_map){
 		if (map[number_map][(playerY * w_h[number_map][0]) + playerX] == '$') {
 			map[number_map][(playerY * w_h[number_map][0]) + playerX] = ' ';
 			score_player++;
@@ -506,17 +489,17 @@ void collect_key_or_exit_or_teleport_or_point(bool* c_k,int w_h[count_map][2], c
 
 
 	//ТЕЛЕПОРТ
-	if (number_map == 2 && (playerY == portals[0] && playerX == portals[1] || playerY == portals[2] && playerX == portals[3])) {
+	if ( playerY == (portals[number_map][0]) && playerX == (portals[number_map][1]) || playerY == (portals[number_map][2]) && playerX == (portals[number_map][3])) {
 		enter_to_action();
 		int temp = _getch();
 		if (temp == 13) {
-			if (playerY == portals[0] && playerX == portals[1]) {
-				playerX = portals[3];
-				playerY = portals[2];
+			if (playerY == portals[number_map][0] && playerX == portals[number_map][1]) {
+				playerX = portals[number_map][3];
+				playerY = portals[number_map][2];
 			}
-			else if (playerY == portals[2] && playerX == portals[3]) {
-				playerX = portals[1];
-				playerY = portals[0];
+			else if (playerY == portals[number_map][2] && playerX == portals[number_map][3]) {
+				playerX = portals[number_map][1];
+				playerY = portals[number_map][0];
 			}
 		}
 		
@@ -525,37 +508,24 @@ void collect_key_or_exit_or_teleport_or_point(bool* c_k,int w_h[count_map][2], c
 	}
 }
 
-
-
-	
-
-
 void game() {
 	srand(time(0));
 	int w_h[count_map][2] = { {10,10}, {20,19},{20,20} };
 	char* map[count_map] = { *maze, *maze2,*maze3 };
-	char userInput = '>';
-	bool* collect = new bool[1];
-	*collect = false;
-
+	char userInput=NULL;
 	while (play_stat == true) {
 		system("cls");
 		main_menu();
-
-		
-
 		switch (selectedOption) {
 		case 0:
 			for (size_t i = 0; i < count_map; i++)
 			{
 				add_score_points(w_h, map, i);
 			}
-			START_func(userInput, collect, w_h, map);
-			
+			START_func(userInput, w_h, map);
 			break;
-			
 		case 1:
-			LEVELS_func(userInput, collect, w_h, map);		
+			LEVELS_func(userInput, w_h, map);		
 			break;
 		case 2:
 			INFO_func();
@@ -566,12 +536,7 @@ void game() {
 		case 4:
 			play_stat = false;
 			break;
-		}
-		
-		
-		
-	}
+		}	
+	}	
 	
-
-	delete[] collect;
 }
