@@ -6,7 +6,6 @@
 //#endif //GAME_LABYRINTH_V_1_0_MAIN_HEAD_H
 #pragma once
 const int count_map = 4;
-
 bool into_radius(int a, int b);
 void enter_to_action();
 char player_direction(char us_in);
