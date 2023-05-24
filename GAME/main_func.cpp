@@ -133,13 +133,19 @@ void enter_to_action() {
 char player_direction(char us_in) {
 	char player;
 	switch (us_in) {
+	case 'W':
 	case 'w':
+	
 		player = '^';
 		break;
+	case 'A':
 	case 'a':
+	
 		player = '<';
 		break;
+	case 'S':
 	case 's':
+	
 		player = 'v';
 		break;
 	default:
@@ -207,10 +213,15 @@ void LEVELS_func(char us_in, int w_h[count_map][2], char* map[]) {
 		}
 		// Перевірка натиснутої клавіші
 		switch (key) {
+		
 		case 'w':
+		case 'W':
 			select_map = (select_map - 1 + count_map) % count_map;  // Перехід до попереднього пункту
 			break;
+		
+		
 		case 's':
+		case 'S':
 			select_map = (select_map + 1) % count_map;  // Перехід до наступного пункту
 			break;
 
@@ -306,13 +317,13 @@ void SETTINGS_func()
 		
 		char key = _getch();  // Зчитування введеного символу
 
-		if (key == 'a')
+		if (key == 'a' || key == 'A' )
 		{
 			// Зменшення радіусу
 			if (radius > minRadius)
 				radius--;
 		}
-		else if (key == 'd')
+		else if (key == 'd' || key == 'D' )
 		{
 			// Збільшення радіусу
 			if (radius < maxRadius)
@@ -359,10 +370,13 @@ void main_menu() {
 		
 		// Перевірка натиснутої клавіші
 		switch (key) {
+		
 		case 'w':
 		case 'W':
 			selectedOption = (selectedOption - 1 + 5) % 5;  // Перехід до попереднього пункту
 			break;
+		
+		
 		case 's':
 		case 'S':
 			selectedOption = (selectedOption + 1) % 5;  // Перехід до наступного пункту
@@ -453,16 +467,16 @@ void drawMaze(char us_in,int w_h[count_map][2] , char* map[]) {
 }
 
 void movePlayer(char userInput, int w_h[count_map][2], char* map[]) {
-	if (userInput == 'w' && map[number_map][(playerY - 1) * w_h[number_map][0] + (playerX)] != B) {
+	if ((userInput == 'w' || userInput == 'W') && map[number_map][(playerY - 1) * w_h[number_map][0] + (playerX)] != B) {
 		playerY--;
 	}
-	else if (userInput == 's' && map[number_map][(playerY + 1) * w_h[number_map][0] + (playerX)] != B) {
+	else if ((userInput == 's' || userInput == 'S' ) && map[number_map][(playerY + 1) * w_h[number_map][0] + (playerX)] != B) {
 		playerY++;
 	}
-	else if (userInput == 'a' && map[number_map][(playerY) * w_h[number_map][0] + (playerX-1)] != B) {
+	else if ((userInput == 'a' || userInput == 'A' ) && map[number_map][(playerY) * w_h[number_map][0] + (playerX-1)] != B) {
 		playerX--;
 	}
-	else if (userInput == 'd' && map[number_map][(playerY) * w_h[number_map][0] + (playerX+1)] != B) {
+	else if ((userInput == 'd' || userInput == 'D' ) && map[number_map][(playerY) * w_h[number_map][0] + (playerX+1)] != B) {
 		playerX++;
 	}
 }
@@ -523,7 +537,7 @@ void game() {
 	srand(time(0));
 	int w_h[count_map][2] = { {10,10}, {20,19},{20,20},{10,10} };
 	char* map[count_map] = { *maze, *maze2,*maze3,*maze4 };
-	char userInput=NULL;
+	int userInput=NULL;
 	while (play_stat == true) {
 		system("cls");
 		main_menu();
