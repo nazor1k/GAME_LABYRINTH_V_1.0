@@ -10,30 +10,42 @@ using namespace std;
 int playerX = 1;
 int playerY = 1;
 
+
+
 bool play_stat = true;
-int radius=3;
+int radius = 21;
+
+
 
 //EXIT AND KEY AND TELEPORT position
 const int exitX = 0;
 const int exitY = 1;
 const int keyX = 2;
 const int keyY = 3;
-int exit_and_key[count_map][4] = { {4,3,8,8}, {18,17,1,16}, {18,18,18,7},{4,3,8,8} };//{ {e1,e2,k1,k2}, {e1,e2,k1,k2}, {e1,e2,k1,k2} }
-const int portals[count_map][4] = { {-1,-1,-1,-1},{-1,-1,-1,-1},{16,2,9,18},{-1,-1,-1,-1}, };//{ y1,x1,y2,x2}
+int exit_and_key[count_map][4] = { {4,3,8,8},{6,18,18,3}, {18,17,1,16}, {18,18,18,7}, {17,18,2,8} };//{ {e1,e2,k1,k2}, {e1,e2,k1,k2}, {e1,e2,k1,k2} }
+const int portals[count_map][4] = { {-1,-1,-1,-1},{3,6,18,1},{-1,-1,-1,-1},{16,2,9,18}, {12,16,1,18} };//{ y1,x1,y2,x2}
+
+
 
 
 //player_stats
-double time_player=0;
+double time_player = 0;
 int score_player = 0;
+int color_player = 37;
+
 
 //MAPS SYMBOL
 const char B = char(219);
 const char E = ' ';
 
+
+
 int select_map = 2;
 int selectedOption = 0;
-int  number_map = 0;
+int number_map = 0;
 bool collect_key = false;
+
+
 
 char maze[10][10] = {
    {B, B, B, B, B, B, B, B, B, B},
@@ -48,7 +60,34 @@ char maze[10][10] = {
    {B, B, B, B, B, B, B, B, B, B}
 };
 
-char maze2[19][20] = {
+
+
+char maze2[20][20] = {
+		{B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B},
+		{B, E, E, E, E, E, E, E, E, B, E, E, E, E, B, E, E, E, E, B},
+		{B, E, B, B, B, B, B, B, E, E, E, E, E, E, E, E, E, B, B, B},
+		{B, E, B, E, E, E, E, B, E, B, B, B, E, B, B, E, B, B, E, B},
+		{B, E, E, E, B, B, E, B, E, E, E, B, E, E, B, B, B, E, E, B},
+		{B, E, E, E, B, E, E, B, E, E, E, B, E, E, E, E, B, B, E, B},
+		{B, B, B, B, B, B, B, B, E, B, B, B, B, B, E, E, E, B, E, B},
+		{B, E, B, E, B, E, E, E, E, E, E, E, E, B, E, B, E, B, E, B},
+		{B, E, B, E, E, E, B, B, E, B, B, E, E, B, B, B, E, B, E, B},
+		{B, E, B, B, B, B, B, E, E, B, E, E, E, E, E, B, B, B, E, B},
+		{B, E, E, E, E, E, E, E, B, B, E, E, E, E, B, B, E, B, E, B},
+		{B, B, B, E, E, B, E, E, B, E, E, E, E, B, B, B, E, B, E, B},
+		{B, E, E, E, E, B, E, E, B, B, B, B, E, B, E, E, E, B, E, B},
+		{B, E, E, B, B, B, E, E, E, E, E, B, E, B, E, E, E, B, E, B},
+		{B, B, B, B, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, B},
+		{B, E, E, E, E, E, E, E, E, E, E, E, E, E, B, E, E, E, E, B},
+		{B, E, B, E, E, E, E, B, B, B, B, B, E, B, B, B, B, E, E, B},
+		{B, B, B, B, B, B, B, B, E, E, E, E, E, E, B, E, B, E, B, B},
+		{B, E, E, E, E, E, E, B, E, E, E, E, E, E, E, E, B, E, E, B},
+		{B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B}
+};
+
+
+
+char maze3[19][20] = {
 		{B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B},
 		{B, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, B, E, B},
 		{B, E, B, B, B, B, B, B, B, B, B, B, B, B, B, B, E, B, E, B},
@@ -69,9 +108,13 @@ char maze2[19][20] = {
 		{B, E, E, E, E, E, B, E, E, B, E, E, E, E, E, E, B, E, E, B},
 		{B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B}
 
+
+
 };
 
-char maze3[20][20] = {
+
+
+char maze4[20][20] = {
 		{B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B},
 		{B, E, E, E, E, E, B, E, E, B, E, E, E, B, E, B, E, E, E, B},
 		{B, E, B, B, B, E, B, B, E, B, E, B, E, B, E, B, E, B, E, B},
@@ -93,22 +136,68 @@ char maze3[20][20] = {
 		{B, E, E, E, E, B, E, E, B, E, E, E, E, E, E, B, E, B, E, B},
 		{B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B}
 
+
+
+};
+
+char maze5[25][25] = {
+		{B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B},
+		{B, E, B, E, E, E, B, E, E, E, E, E, B, E, E, B, E, B, E, E, E, E, E, E, B},
+		{B, E, E, E, B, E, B, E, B, B, E, B, B, E, B, B, E, B, B, E, B, B, E, B, B},
+		{B, B, B, B, B, E, B, E, E, B, E, E, B, E, B, E, E, B, B, B, E, B, E, E, B},
+		{B, E, E, E, E, E, B, B, E, B, B, E, E, E, B, E, E, B, E, B, E, B, B, E, B},
+		{B, E, B, B, B, B, B, E, E, B, E, E, B, B, B, B, E, B, E, B, E, B, E, E, B},
+		{B, E, E, E, E, E, E, E, B, B, E, E, B, E, B, E, E, E, E, B, E, B, B, E, B},
+		{B, B, B, B, E, E, E, E, E, E, E, B, B, E, B, E, B, E, E, E, E, E, E, E, B},
+		{B, E, E, B, E, B, B, B, B, B, E, E, E, E, B, B, B, B, B, B, B, B, E, E, B},
+		{B, E, B, B, E, B, E, E, E, B, B, B, B, E, E, E, E, B, E, E, E, B, E, B, B},
+		{B, E, E, B, E, B, E, E, E, B, E, E, E, E, E, B, E, E, E, E, E, B, E, E, B},
+		{B, B, E, B, B, B, E, E, E, B, E, E, B, B, B, B, B, B, B, E, B, B, E, B, B},
+		{B, E, E, B, E, B, B, B, E, B, B, E, B, E, B, E, E, B, E, E, E, B, E, E, B},
+		{B, E, B, B, E, E, E, B, E, B, B, E, B, E, B, E, B, B, E, B, B, B, B, E, B},
+		{B, E, B, E, E, B, E, B, E, E, E, E, E, E, B, E, E, E, E, B, E, B, B, E, B},
+		{B, E, B, E, B, B, E, B, E, B, B, B, B, B, B, E, E, E, E, B, E, E, E, E, B},
+		{B, E, B, B, B, E, E, B, E, E, E, B, E, E, E, E, B, B, B, B, B, B, B, E, B},
+		{B, E, E, E, E, E, E, E, E, E, E, B, E, E, E, E, B, E, E, E, B, E, E, E, B},
+		{B, E, B, B, B, B, E, B, B, B, B, B, B, B, B, B, B, E, B, E, B, E, B, E, B},
+		{B, E, B, E, E, B, B, B, E, E, E, E, B, E, E, E, B, B, B, E, B, E, B, E, B},
+		{B, B, B, B, E, E, E, B, B, B, E, E, E, E, B, E, E, E, B, E, B, E, B, E, B},
+		{B, E, B, E, E, E, B, B, E, B, B, B, B, B, B, B, E, E, B, E, E, E, B, E, B},
+		{B, E, B, B, B, E, E, E, E, B, E, B, E, E, E, B, B, B, B, B, B, B, B, E, B},
+		{B, E, E, E, E, E, E, E, E, B, E, E, E, B, E, E, E, E, E, E, E, E, E, E, B},
+		{B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B}
+
+
+
 };
 
 
-char maze4[10][10] = {
-   {B, B, B, B, B, B, B, B, B, B},
-   {B, E, E, E, E, E, E, E, E, B},
-   {B, E, B, B, B, B, E, B, E, B},
-   {B, E, B, E, E, B, E, E, E, B},
-   {B, E, B, E, B, B, B, B, E, B},
-   {B, E, B, E, E, E, E, B, E, B},
-   {B, E, B, B, B, B, E, B, E, B},
-   {B, E, E, E, E, B, E, E, E, B},
-   {B, B, E, B, E, E, E, B, E, B},
-   {B, B, B, B, B, B, B, B, B, B}
-};
 
+void print_color_player() {
+	switch (color_player) {
+	case 31:
+		cout << "red     ";
+		break;
+	case 32:
+		cout << "green   ";
+		break;
+	case 33:
+		cout << "yellow  ";
+		break;
+	case 34:
+		cout << "blue    ";
+		break;
+	case 35:
+		cout << "purple  ";
+		break;
+	case 36:
+		cout << "cyan    ";
+		break;
+	case 37:
+		cout << "white   ";
+		break;
+	}
+}
 
 
 bool into_radius(int a, int b) {
@@ -277,6 +366,9 @@ void INFO_func() {
 	cout << "|    4) The '"<<"\033[37;45m" << "O" << "\033[0m' is a portal that will help             |" << endl;
 	cout << "|    send you to closed areas of the maze              |" << endl;
 	cout << "|                                                      |" << endl;
+	cout << "|    5) The '" << "\033[32m" << "!" << "\033[0m' is a SUPER point, which give           |"<< endl;
+	cout<<"|     you 10 points                                    |" << endl;
+	cout << "|                                                      |" << endl;
 	cout << "|    Game made by Hus Artem and Korobchyk Nazar        |" << endl;
 	cout << "|                                                      |" << endl;
 	cout << "|    Git Hub repository:                               |" << endl;
@@ -292,6 +384,9 @@ void SETTINGS_func()
 {
 	int minRadius = 3;
 	int maxRadius = 21;
+
+	int minColor = 31;
+	int maxColor = 37;
 	/*radius = minRadius;*/  // Початкове значення радіусу
 
 	while (true)
@@ -305,9 +400,15 @@ void SETTINGS_func()
 		cout << "| Radius: " << ((radius > 9) ? "" : "0"); 
 		if (radius <= 20) cout<<(radius)<<"     "; else cout << "ALL_MAP";
 		cout<<"       |" << endl;
+		cout << "| Color: ";
+		print_color_player();
+		cout << "       |" << endl;
 		cout << "|                       |" << endl;
 		cout << "| [A] Decrease radius   |" << endl;
 		cout << "| [D] Increase radius   |" << endl;
+		cout << "|                       |" << endl;
+		cout << "| [W] Increase color    |" << endl;
+		cout << "| [S] Decrease color    |" << endl;
 		cout << "|                       |" << endl;
 		cout << "| [ENTER] Save and exit |" << endl;
 		cout << "+=======================+" << endl; 
@@ -316,29 +417,56 @@ void SETTINGS_func()
 
 		
 		char key = _getch();  // Зчитування введеного символу
-
-		if (key == 'a' || key == 'A' )
-		{
+		switch (key) {
+		case 'a': 
+		case 'A': 
 			// Зменшення радіусу
-			if (radius > minRadius)
-				radius--;
-		}
-		else if (key == 'd' || key == 'D' )
-		{
+			radius--;
+			if (radius < minRadius)
+				radius = maxRadius;
+			break;
+		case 'd': 
+		case 'D':
 			// Збільшення радіусу
-			if (radius < maxRadius)
-				radius++;
+			radius++;
+			if (radius > maxRadius)
+				radius=minRadius;
+			break;
+			
+		case 'w':
+		case 'W':
+			color_player--;  // Перехід до попереднього пункту
+			if (color_player<minColor) {
+				color_player = maxColor;
+			}
+			break;
+
+		case 's':
+		case 'S':
+			color_player++;// Перехід до наступного пункту
+			if (color_player> maxColor) {
+				color_player = minColor;
+			}
+
+				
+			break;
+
+
+		
 		}
-		else if (key == 13 || key == 8)
-		{
+		if (key == 13 || key == 8) {
 			// Збереження радіусу і вихід з функції 
 			cout << "Radius set to: ";
 			if (radius <= 20) cout << radius; else cout << "ALL_MAP";
-			cout<<"!" << endl;
+			cout << "!" << endl;
+			cout << "Color set to: ";
+			print_color_player();
+			cout << "!" << endl;
 			Sleep(1000);
 			break;
-		}
 		
+		}
+			
 	}
 }
 
@@ -425,7 +553,18 @@ void add_score_points(int w_h[count_map][2], char* map[],int num) {
 			map[num][point_x * w_h[num][0] + point_y] = '$';
 		}
 	}
+	//генеруємо cупер поінти
+	for (size_t i = 0; i <1; i++)
+	{
+		int point_x = rand() % w_h[num][1];
+		int point_y = rand() % w_h[num][0];
+		if (map[num][point_x * w_h[num][0] + point_y] != B && map[num][point_x * w_h[num][0] + point_y] != '$') {
+			map[num][point_x * w_h[num][0] + point_y] = '!';
+		}
+	}
 }
+ 
+//int player()
 
 void drawMaze(char us_in,int w_h[count_map][2] , char* map[]) {
 	system("cls");
@@ -435,7 +574,7 @@ void drawMaze(char us_in,int w_h[count_map][2] , char* map[]) {
 		for (int j = 0; j < w_h[number_map][0]; j++) {//    width
 			if (into_radius(i,j)) {
 				if (i == playerY && j == playerX) {
-					cout << player;
+					cout <<"\033[" << color_player <<'m' <<player << "\033[0m";
 				}
 				else if (i == exit_and_key[number_map][keyY] && j == exit_and_key[number_map][keyX] && collect_key == false) {
 					cout << "\033[38;2;255;200;100m" << '*' << "\033[0m";
@@ -446,6 +585,9 @@ void drawMaze(char us_in,int w_h[count_map][2] , char* map[]) {
 				else if ((i == exit_and_key[number_map][exitY] && j == exit_and_key[number_map][exitX]) && collect_key == true) {
 					cout << "\033[31;2m" << 'X' << "\033[0m";
 				}
+				else if (map[number_map][i * w_h[number_map][0] + j]=='!') {
+					 cout << "\033[32m" << '!' << "\033[0m";
+				}
 				else {
 					cout << (map[number_map][i * w_h[number_map][0] + j]);//map[number_map][i][j] по факту аналогічне map[number_map][i * w_h[number_map][0] + j] одне одному але перше не робить
 				}
@@ -455,6 +597,7 @@ void drawMaze(char us_in,int w_h[count_map][2] , char* map[]) {
 			}
 			
 		}
+		
 		cout << endl;
 	}
 
@@ -463,7 +606,9 @@ void drawMaze(char us_in,int w_h[count_map][2] , char* map[]) {
 	cout << "| BACKSPACE TO MAIN   |" << endl;
 	cout << "|      MENU ...       |" << endl;
 	cout << "|                     |" << endl;
+	cout << "| KEY COLECTED=>"<<(collect_key? "TRUE ":"FALSE") <<" |" << endl;
 	cout << "+=====================+" << endl;
+	
 }
 
 void movePlayer(char userInput, int w_h[count_map][2], char* map[]) {
@@ -510,6 +655,15 @@ void collect_key_or_exit_or_teleport_or_point(int w_h[count_map][2], char* map[]
 		}
 	
 	}
+
+	//КОЛИ НАСТУПИЛИ НА SUPER ПОІНТ
+	if (number_map != count_map) {
+		if (map[number_map][(playerY * w_h[number_map][0]) + playerX] == '!') {
+			map[number_map][(playerY * w_h[number_map][0]) + playerX] = ' ';
+			score_player+=10;
+		}
+
+	}
 	
 
 
@@ -535,9 +689,9 @@ void collect_key_or_exit_or_teleport_or_point(int w_h[count_map][2], char* map[]
 
 void game() {
 	srand(time(0));
-	int w_h[count_map][2] = { {10,10}, {20,19},{20,20},{10,10} };
-	char* map[count_map] = { *maze, *maze2,*maze3,*maze4 };
-	int userInput=NULL;
+	int w_h[count_map][2] = { {10,10}, {20,20}, {20,19},{20,20},{25,25} };
+	char* map[count_map] = { *maze, *maze2,*maze3,*maze4,*maze5 };
+	int userInput = NULL;
 	while (play_stat == true) {
 		system("cls");
 		main_menu();
@@ -550,7 +704,7 @@ void game() {
 			START_func(userInput, w_h, map);
 			break;
 		case 1:
-			LEVELS_func(userInput, w_h, map);		
+			LEVELS_func(userInput, w_h, map);
 			break;
 		case 2:
 			INFO_func();
@@ -561,7 +715,7 @@ void game() {
 		case 4:
 			play_stat = false;
 			break;
-		}	
-	}	
-	
+		}
+	}
+
 }
